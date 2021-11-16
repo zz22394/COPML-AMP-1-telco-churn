@@ -1,5 +1,5 @@
-name: COPML-1 Telco Churn
-description: COPML project 1 to demonstrate building a churn model on CML
+name: COPML AMP 1 - Telco Churn
+description: COPML example project 1 to demonstrate building a churn model on CML
 author: Cloudera Inc.
 specification_version: 1.0
 prototype_version: 1.0
