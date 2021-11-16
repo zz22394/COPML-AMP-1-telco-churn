@@ -1,0 +1,6 @@
+"Churn Model API Endpoint":
+  hive_table_qualified_names:
+    - "default.telco_churn_train@cm"
+  metadata:
+    training_file: "code/model_train.py"
+    training_date: "1637062184748"

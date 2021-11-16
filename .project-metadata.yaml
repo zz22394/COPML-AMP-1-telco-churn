@@ -1,0 +1,120 @@
+name: COPML-1 Telco Churn
+description: COPML project 1 to demonstrate building a churn model on CML
+author: Cloudera Inc.
+specification_version: 1.0
+prototype_version: 1.0
+date: "2021-11-01"
+api_version: 1
+runtimes:
+  - editor: Workbench
+    kernel: Python 3.7
+    edition: Standard
+
+tasks:
+  - type: run_session
+    name: Run the Bootstrap Script
+    script: code/_bootstrap.py
+    memory: 2
+    cpu: 1
+    gpu: 0
+
+  - type: run_session
+    name: Ingest Data to Hive
+    script: code/data_ingest.py
+    memory: 2
+    cpu: 1
+    gpu: 0    
+
+  - type: create_job
+    name: Train Model
+    entity_label: train_model
+    script: code/model_train.py
+    arguments: None
+    short_summary: Train the model
+    kernel: python3
+
+  - type: create_job
+    name: Run Model Batch
+    entity_label: model_batch
+    script: code/model_run_batch.py
+    arguments: None
+    short_summary: Run batch inference with model
+    kernel: python3
+
+  - type: create_job
+    name: Check Model
+    entity_label: check_model
+    script: code/model_check.py
+    arguments: None
+    short_summary: Check current model performance
+    kernel: python3
+
+  - type: create_model
+    name: Churn Model API Endpoint
+    entity_label: telco_churn_model
+    description: This model API endpoint is used to predict churn
+    short_summary: Create the churn model prediction api endpoint
+    default_resources:
+      cpu: 1
+      memory: 2
+    default_replication_policy:
+      type: fixed
+      num_replicas: 1
+
+  - type: build_model
+    name: Churn Model Endpoint
+    entity_label: telco_churn_model
+    comment: Build churn model
+    examples:
+      - request: {
+                    "StreamingTV": "No",
+                    "MonthlyCharges": 70.35,
+                    "PhoneService": "No",
+                    "PaperlessBilling": "No",
+                    "Partner": "No",
+                    "OnlineBackup": "No",
+                    "gender": "Female",
+                    "Contract": "Month-to-month",
+                    "TotalCharges": 1397.475,
+                    "StreamingMovies": "No",
+                    "DeviceProtection": "No",
+                    "PaymentMethod": "Bank transfer (automatic)",
+                    "tenure": 29,
+                    "Dependents": "No",
+                    "OnlineSecurity": "No",
+                    "MultipleLines": "No",
+                    "InternetService": "DSL",
+                    "SeniorCitizen": "No",
+                    "TechSupport": "No",
+                }
+        response: ""
+    target_file_path: code/model_serve.py
+    target_function_name: explain
+    kernel: python3
+
+  - type: deploy_model
+    name: telco_churn_model
+    entity_label: telco_churn_model
+    cpu: 1
+    gpu: 0
+
+  - type: start_application
+    name: Application to Serve Churn UI
+    subdomain: copmlchurnapp
+    script: code/application.py
+    kernel: python3
+    memory: 1
+    cpu: 1
+    gpu: 0
+
+  - type: run_job
+    entity_label: train_model
+    short_summary: Run the model training job
+
+  - type: run_job
+    entity_label: model_batch
+    short_summary: Run the model batch inference job
+
+  - type: run_job
+    entity_label: check_model
+    short_summary: Run the check model job
