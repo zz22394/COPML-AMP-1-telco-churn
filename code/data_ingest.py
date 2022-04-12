@@ -57,8 +57,7 @@ storage = os.environ['STORAGE']
 hadoop_user = os.environ['HADOOP_USER_NAME']
 
 telco_data = spark.read.csv(
-    "{}/user/{}/data/churn/WA_Fn-UseC_-Telco-Customer-Churn-.csv".format(
-        storage,hadoop_user),
+    "/home/cdsw/data/WA_Fn-UseC_-Telco-Customer-Churn-.csv",
     header=True,
     schema=schema,
     sep=',',
